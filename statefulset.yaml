@@ -31,7 +31,7 @@ spec:
     spec:
       containers:
       - name: active-passive
-        image: pierone.stups.zalan.do/loungesre/testimage:v1
+        image: ubuntu:16.04
         ports:
         - containerPort: 80
           name: web

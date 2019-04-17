@@ -1,0 +1,45 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: active-passive
+  labels:
+    app: active-passive
+spec:
+  ports:
+  - port: 80
+    name: active-passive
+  clusterIP: None
+  selector:
+    app: active-passive
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: active-passive
+  annotations:
+    downscaler/exclude: "true"
+spec:
+  serviceName: "active-passive"
+  replicas: 2
+  selector:
+    matchLabels:
+      app: active-passive
+  template:
+    metadata:
+      labels:
+        app: active-passive
+    spec:
+      containers:
+      - name: active-passive
+        image: pierone.stups.zalan.do/loungesre/testimage:v1
+        ports:
+        - containerPort: 80
+          name: web
+        readinessProbe:
+          exec:
+            command:
+            - /bin/sh
+            - -c
+            - /root/check-readiness.sh
+          initialDelaySeconds: 5
+          periodSeconds: 5
